@@ -1,7 +1,7 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { AlertCircle, ArrowRight, ShieldCheck } from "lucide-react";
+import { ArrowRight, ShieldCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 
@@ -80,12 +80,9 @@ export default function Login() {
                 </Button>
               </div>
 
-              <div className="mt-6 rounded-lg border border-amber-500/20 bg-amber-500/10 p-3 text-xs text-amber-100">
-                <p className="flex items-start gap-2 leading-relaxed">
-                  <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-                  Em producao, defina JWT_SECRET para assinar sessoes com seguranca.
-                </p>
-              </div>
+              <p className="mt-6 text-xs text-muted-foreground">
+                Sessao persistente habilitada para acesso rapido ao painel.
+              </p>
             </CardContent>
           </Card>
         </div>
