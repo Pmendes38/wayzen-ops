@@ -3,7 +3,9 @@
   "buildCommand": "vite build && esbuild server/serverless.ts --bundle --platform=node --packages=external --format=esm --outfile=api/index.js",
   "outputDirectory": "dist/public",
   "functions": {
-    "api/index.js": {}
+    "api/index.js": {
+      "runtime": "nodejs20.x"
+    }
   },
   "rewrites": [
     {
