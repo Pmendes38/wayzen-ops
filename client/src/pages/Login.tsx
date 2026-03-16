@@ -67,7 +67,7 @@ export default function Login() {
               <div>
                 <h2 className="text-xl font-semibold tracking-tight">Acessar conta</h2>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Use o provedor OAuth da organizacao para autenticar com seguranca.
+                  Entre com autenticacao direta para acessar o painel da operacao.
                 </p>
 
                 <Button
@@ -75,7 +75,7 @@ export default function Login() {
                   onClick={handleLogin}
                   disabled={loading || isRedirecting}
                 >
-                  {isRedirecting ? "Redirecionando..." : "Entrar com OAuth"}
+                  {isRedirecting ? "Entrando..." : "Entrar no painel"}
                   {!isRedirecting ? <ArrowRight className="h-4 w-4" /> : null}
                 </Button>
               </div>
@@ -83,7 +83,7 @@ export default function Login() {
               <div className="mt-6 rounded-lg border border-amber-500/20 bg-amber-500/10 p-3 text-xs text-amber-100">
                 <p className="flex items-start gap-2 leading-relaxed">
                   <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-                  Se o ambiente ainda nao estiver configurado, o backend pode retornar a mensagem OAuth login is not configured.
+                  Em producao, defina JWT_SECRET para assinar sessoes com seguranca.
                 </p>
               </div>
             </CardContent>
