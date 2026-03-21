@@ -17,12 +17,10 @@ import PreparacaoProcesso from "./pages/preparacao/Processo";
 import PreparacaoOnboarding from "./pages/preparacao/Onboarding";
 import PreparacaoAtividades from "./pages/preparacao/Atividades";
 import PreparacaoSemanas from "./pages/preparacao/Semanas";
-import Login from "./pages/Login";
 
 function Router() {
   return (
     <Switch>
-      <Route path={"/login"} component={Login} />
       <Route path={"/"} component={Home} />
       <Route path={"/clients"} component={Clients} />
       <Route path={"/funnels"} component={Funnels} />

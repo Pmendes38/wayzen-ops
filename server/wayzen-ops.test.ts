@@ -1,8 +1,8 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { appRouter } from "./routers";
 import type { TrpcContext } from "./_core/context";
 
-type AuthenticatedUser = NonNullable<TrpcContext["user"]>;
+type AuthenticatedUser = TrpcContext["user"];
 
 function createAuthContext(role: "user" | "admin" = "admin"): TrpcContext {
   const user: AuthenticatedUser = {
@@ -29,19 +29,6 @@ function createAuthContext(role: "user" | "admin" = "admin"): TrpcContext {
   };
 }
 
-function createUnauthContext(): TrpcContext {
-  return {
-    user: null,
-    req: {
-      protocol: "https",
-      headers: {},
-    } as TrpcContext["req"],
-    res: {
-      clearCookie: vi.fn(),
-    } as unknown as TrpcContext["res"],
-  };
-}
-
 describe("Wayzen Ops - Auth", () => {
   it("auth.me returns user when authenticated", async () => {
     const ctx = createAuthContext();
@@ -52,11 +39,11 @@ describe("Wayzen Ops - Auth", () => {
     expect(result?.name).toBe("Test User");
   });
 
-  it("auth.me returns null when not authenticated", async () => {
-    const ctx = createUnauthContext();
+  it("auth.me returns user in no-auth mode", async () => {
+    const ctx = createAuthContext();
     const caller = appRouter.createCaller(ctx);
     const result = await caller.auth.me();
-    expect(result).toBeNull();
+    expect(result).toBeDefined();
   });
 });
 
@@ -122,7 +109,7 @@ describe("Wayzen Ops - Clients CRUD", () => {
     expect(updated?.status).toBe("active");
   });
 
-  it("deletes a client (admin only)", async () => {
+  it("deletes a client", async () => {
     const ctx = createAuthContext("admin");
     const caller = appRouter.createCaller(ctx);
     await caller.clients.delete({ id: clientId });
@@ -130,10 +117,10 @@ describe("Wayzen Ops - Clients CRUD", () => {
     expect(deleted).toBeUndefined();
   });
 
-  it("rejects delete for non-admin user", async () => {
+  it("allows delete for non-admin user in no-auth mode", async () => {
     const ctx = createAuthContext("user");
     const caller = appRouter.createCaller(ctx);
-    await expect(caller.clients.delete({ id: 999 })).rejects.toThrow();
+    await expect(caller.clients.delete({ id: 999 })).resolves.toBeUndefined();
   });
 });
 
@@ -310,19 +297,19 @@ describe("Wayzen Ops - Reports", () => {
 });
 
 describe("Wayzen Ops - Access Control", () => {
-  it("rejects unauthenticated access to protected routes", async () => {
-    const ctx = createUnauthContext();
-    const caller = appRouter.createCaller(ctx);
-    await expect(caller.clients.list()).rejects.toThrow();
-  });
-
-  it("rejects non-admin access to admin routes", async () => {
+  it("allows access to previously protected routes in no-auth mode", async () => {
     const ctx = createAuthContext("user");
     const caller = appRouter.createCaller(ctx);
-    await expect(caller.users.list()).rejects.toThrow();
+    await expect(caller.clients.list()).resolves.toBeDefined();
   });
 
-  it("allows admin access to admin routes", async () => {
+  it("allows non-admin access to admin routes in no-auth mode", async () => {
+    const ctx = createAuthContext("user");
+    const caller = appRouter.createCaller(ctx);
+    await expect(caller.users.list()).resolves.toBeDefined();
+  });
+
+  it("still allows admin access to admin routes", async () => {
     const ctx = createAuthContext("admin");
     const caller = appRouter.createCaller(ctx);
     const result = await caller.users.list();

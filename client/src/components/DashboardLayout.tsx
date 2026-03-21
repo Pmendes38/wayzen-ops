@@ -20,7 +20,6 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { getLoginUrl } from "@/const";
 import { useIsMobile } from "@/hooks/useMobile";
 import {
   LayoutDashboard, LogOut, PanelLeft, Users, BookOpen, CalendarCheck,
@@ -61,19 +60,13 @@ export default function DashboardLayout({
     const saved = localStorage.getItem(SIDEBAR_WIDTH_KEY);
     return saved ? parseInt(saved, 10) : DEFAULT_WIDTH;
   });
-  const { loading, user } = useAuth();
+  const { loading } = useAuth();
 
   useEffect(() => {
     localStorage.setItem(SIDEBAR_WIDTH_KEY, sidebarWidth.toString());
   }, [sidebarWidth]);
 
-  useEffect(() => {
-    if (!loading && !user) {
-      window.location.href = getLoginUrl();
-    }
-  }, [loading, user]);
-
-  if (loading || !user) {
+  if (loading) {
     return <DashboardLayoutSkeleton />;
   }
 

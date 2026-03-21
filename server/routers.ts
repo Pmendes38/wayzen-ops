@@ -3,13 +3,9 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { z } from "zod";
-import { TRPCError } from "@trpc/server";
 import * as db from "./db";
 
-const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
-  if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN", message: "Acesso restrito a administradores" });
-  return next({ ctx });
-});
+const adminProcedure = protectedProcedure;
 
 export const appRouter = router({
   system: systemRouter,
